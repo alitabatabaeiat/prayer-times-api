@@ -6,8 +6,8 @@ exports.getPrayerTimesRequestSchema = Joi.object().keys({
   query: Joi.object()
     .required()
     .keys({
-      lat: Joi.number().min(-90).max(90).required(),
-      lng: Joi.number().min(-180).max(180).required(),
+      latitude: Joi.number().min(-90).max(90).required(),
+      longitude: Joi.number().min(-180).max(180).required(),
       calculationMethod: Joi.string()
         .valid(
           ..._.chain(adhan.CalculationMethod)
@@ -23,7 +23,13 @@ exports.getQiblaRequestSchema = Joi.object().keys({
   query: Joi.object()
     .required()
     .keys({
-      lat: Joi.number().min(-90).max(90).required(),
-      lng: Joi.number().min(-180).max(180).required(),
+      latitude: Joi.number().min(-90).max(90).required(),
+      longitude: Joi.number().min(-180).max(180).required(),
     }),
+});
+
+exports.getCoordinatesRequestSchema = Joi.object().keys({
+  query: Joi.object().required().keys({
+    address: Joi.string().required(),
+  }),
 });

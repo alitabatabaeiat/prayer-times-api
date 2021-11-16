@@ -1,6 +1,7 @@
 require("dotenv/config");
 const express = require("express");
 const jsend = require("jsend");
+const routes = require("./routes");
 const AppRouteNotFoundError = require("./errors/RouteNotFound");
 const errorHandler = require("./middlewares/error");
 const { sequelize } = require("./models");
@@ -11,6 +12,7 @@ app.use(express.json());
 
 app.use(jsend.middleware);
 
+app.use("/api/v1", routes);
 app.get("/", (req, res) => {
   res.send(
     "Hello World! This api is going to provide you with owghat. Stay tuned!"

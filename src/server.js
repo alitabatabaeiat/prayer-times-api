@@ -4,7 +4,7 @@ const jsend = require("jsend");
 const routes = require("./routes");
 const AppRouteNotFoundError = require("./errors/RouteNotFound");
 const errorHandler = require("./middlewares/error");
-const { sequelize } = require("./models");
+// const { sequelize } = require("./models");
 
 const app = express();
 
@@ -26,16 +26,21 @@ app.use(errorHandler);
 const port = process.env.PORT || 5000;
 
 let server;
-
-sequelize.authenticate().then(() => {
-  console.log(`${process.env.DB_DIALECT} connection established...`);
-
-  server = app.listen(port, () => {
-    console.log(
-      `Server is running in ${process.env.NODE_ENV} mode on port ${port}`
-    );
-  });
+server = app.listen(port, () => {
+  console.log(
+    `Server is running in ${process.env.NODE_ENV} mode on port ${port}`
+  );
 });
+
+// sequelize.authenticate().then(() => {
+//   console.log(`${process.env.DB_DIALECT} connection established...`);
+
+//   server = app.listen(port, () => {
+//     console.log(
+//       `Server is running in ${process.env.NODE_ENV} mode on port ${port}`
+//     );
+//   });
+// });
 
 process.on("unhandledRejection", (err, promise) => {
   console.error(`Error: ${err.message}`, err);

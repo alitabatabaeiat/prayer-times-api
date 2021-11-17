@@ -1,9 +1,15 @@
 require("dotenv/config");
 const express = require("express");
+const helmet = require("helmet");
+const xss = require("xss-clean");
+const rateLimit = require("express-rate-limit");
+const hpp = require("hpp");
+const cors = require("cors");
 const jsend = require("jsend");
 const routes = require("./routes");
-const AppRouteNotFoundError = require("./errors/RouteNotFound");
+const AppRouteNotFoundError = require("./errors/RouteNotFoundError");
 const errorHandler = require("./middlewares/error");
+const AppRateLimitError = require("./errors/RateLimitError");
 // const { sequelize } = require("./models");
 
 const app = express();
@@ -11,6 +17,25 @@ const app = express();
 app.use(express.json());
 
 app.use(jsend.middleware);
+
+app.use(helmet());
+
+app.use(xss());
+
+app.use(
+  rateLimit({
+    windowMs: 10 * 60 * 1000,
+    max: 100,
+    skipFailedRequests: true,
+    handler: (req, res, next, options) => {
+      throw new AppRateLimitError(options.message);
+    },
+  })
+);
+
+app.use(hpp());
+
+app.use(cors());
 
 app.use("/api/v1", routes);
 app.get("/", (req, res) => {

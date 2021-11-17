@@ -3,7 +3,7 @@ const AppBaseError = require("../errors/BaseError");
 const AppInternalServerError = require("../errors/InternalServerError");
 const AppDatabaseError = require("../errors/DatabaseError");
 const AppValidationError = require("../errors/ValidationError");
-const AppRouteNotFoundError = require("../errors/RouteNotFound");
+const AppRouteNotFoundError = require("../errors/RouteNotFoundError");
 
 const errorHandler = (err, req, res, next) => {
   let error;

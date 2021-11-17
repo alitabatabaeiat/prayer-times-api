@@ -1,7 +1,6 @@
 const _ = require("lodash");
 const adhan = require("adhan");
 const moment = require("moment");
-const geoTz = require("geo-tz");
 const asyncHandler = require("../utils/asyncHandler");
 const validate = require("../utils/validate");
 const { getForwardGeocoding } = require("../utils/positionStack");
@@ -22,26 +21,26 @@ exports.getCalculationMethods = asyncHandler(async (req, res) => {
 
 exports.getPrayerTimes = asyncHandler(async (req, res) => {
   const { query } = validate(getPrayerTimesRequestSchema, req);
-  const date = new Date();
+
+  const date = moment(query.date);
   const coordinates = new adhan.Coordinates(query.latitude, query.longitude);
-  const params = query.calculationMethod
-    ? adhan.CalculationMethod[query.calculationMethod]()
-    : adhan.CalculationMethod.MuslimWorldLeague();
+  const calculationMethod = query.calculationMethod || "MuslimWorldLeague";
+  const params = adhan.CalculationMethod[calculationMethod]();
 
   const times = ["fajr", "sunrise", "dhuhr", "asr", "maghrib", "isha"];
 
-  let prayerTimes = new adhan.PrayerTimes(coordinates, date, params);
+  let prayerTimes = new adhan.PrayerTimes(coordinates, date.toDate(), params);
 
   prayerTimes = _.chain(prayerTimes)
     .pick(times)
-    .mapValues((time) =>
-      moment(time)
-        .tz(geoTz(query.latitude, query.longitude)[0])
-        .format("HH:mmZ")
-    )
+    .mapValues((time) => moment(time).format("HH:mmZ"))
     .value();
 
-  res.status(200).jsend.success({ prayerTimes });
+  res.status(200).jsend.success({
+    date: date.format("YYYY-MM-DD"),
+    calculationMethod,
+    prayerTimes,
+  });
 });
 
 exports.getQibla = asyncHandler(async (req, res) => {

@@ -1,5 +1,5 @@
 const _ = require("lodash");
-const Joi = require("joi");
+const Joi = require("joi").extend(require("@joi/date"));
 const adhan = require("adhan");
 
 exports.getPrayerTimesRequestSchema = Joi.object().keys({
@@ -16,6 +16,7 @@ exports.getPrayerTimesRequestSchema = Joi.object().keys({
             .value()
         )
         .optional(),
+      date: Joi.date().format("YYYY-MM-DD").utc().optional(),
     }),
 });
 

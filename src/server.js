@@ -6,10 +6,13 @@ const rateLimit = require("express-rate-limit");
 const hpp = require("hpp");
 const cors = require("cors");
 const jsend = require("jsend");
+const swaggerUI = require("swagger-ui-express");
+const docs = require("./docs");
 const routes = require("./routes");
 const AppRouteNotFoundError = require("./errors/RouteNotFoundError");
 const errorHandler = require("./middlewares/error");
 const AppRateLimitError = require("./errors/RateLimitError");
+const swaggerOptions = require("./configs/swagger");
 // const { sequelize } = require("./models");
 
 const app = express();
@@ -37,6 +40,8 @@ app.use(hpp());
 
 app.use(cors());
 
+app.use("/docs", swaggerUI.serve, swaggerUI.setup(docs, swaggerOptions));
+
 app.use("/api/v1", routes);
 app.get("/", (req, res) => {
   res.send(
@@ -44,7 +49,7 @@ app.get("/", (req, res) => {
   );
 });
 
-app.use((req, res, next) => next(new AppRouteNotFoundError()));
+app.use((req, res, next) => next(new AppRouteNotFoundError(req.path)));
 
 app.use(errorHandler);
 

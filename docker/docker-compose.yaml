@@ -1,0 +1,20 @@
+version: "3"
+services:
+  prayer-times-api:
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile
+    image: prayer-times-api
+    container_name: prayer-times-api
+    restart: unless-stopped
+    networks:
+      - app-network
+      - nginx-network
+
+networks:
+  app-network:
+    driver: bridge
+    name: prayer-times-api-network
+  nginx-network:
+    driver: bridge
+    name: nginx

@@ -46,7 +46,8 @@ exports.getPrayerTimes = asyncHandler(async (req, res) => {
 exports.getQibla = asyncHandler(async (req, res) => {
   const { query } = validate(getQiblaRequestSchema, req);
   const coordinates = new adhan.Coordinates(query.latitude, query.longitude);
-  const qiblaDirection = adhan.Qibla(coordinates);
+  let qiblaDirection = adhan.Qibla(coordinates).toFixed(2);
+  qiblaDirection = parseFloat(qiblaDirection);
 
   res.status(200).jsend.success({ qiblaDirection });
 });
@@ -55,16 +56,19 @@ exports.getCoordinates = asyncHandler(async (req, res) => {
   const { query } = validate(getCoordinatesRequestSchema, req);
   let coordinates = await getForwardGeocoding(query.address);
   coordinates = _.map(coordinates, (coordinate) =>
-    _.pick(coordinate, [
-      "latitude",
-      "longitude",
-      "region",
-      "region_code",
-      "locality",
-      "country",
-      "country_code",
-      "label",
-    ])
+    _.chain(coordinate)
+      .pick([
+        "latitude",
+        "longitude",
+        "region",
+        "region_code",
+        "locality",
+        "country",
+        "country_code",
+        "label",
+      ])
+      .mapKeys((value, key) => _.camelCase(key))
+      .value()
   );
 
   res.status(200).jsend.success({ coordinates });

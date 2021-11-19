@@ -14,7 +14,7 @@ services:
 networks:
   app-network:
     driver: bridge
-    name: prayer-times-api-network
+    name: prayer-times-api
   nginx-network:
     driver: bridge
     name: nginx

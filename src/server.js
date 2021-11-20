@@ -11,11 +11,14 @@ const docs = require("./docs");
 const routes = require("./routes");
 const AppRouteNotFoundError = require("./errors/RouteNotFoundError");
 const errorHandler = require("./middlewares/error");
+const forwardPrefixMiddleware = require("./middlewares/forwardPrefix");
 const AppRateLimitError = require("./errors/RateLimitError");
 const swaggerOptions = require("./configs/swagger");
 // const { sequelize } = require("./models");
 
 const app = express();
+
+app.use(forwardPrefixMiddleware);
 
 app.use(express.json());
 

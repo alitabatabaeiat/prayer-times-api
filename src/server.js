@@ -47,8 +47,10 @@ app.use("/docs", swaggerUI.serve, swaggerUI.setup(docs, swaggerOptions));
 
 app.use("/api/v1", routes);
 app.get("/", (req, res) => {
+  const prefix = req.headers["x-forwarded-prefix"] || "";
+
   res.send(
-    `Hello my friend! This api gives you the prayer times. Click <a href="/docs">here</a> to check out the documentation!`
+    `Hello my friend! This api gives you the prayer times. Click <a href="${prefix}/docs">here</a> to check out the documentation!`
   );
 });
 

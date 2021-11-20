@@ -5,7 +5,7 @@ const AppDatabaseError = require("../errors/DatabaseError");
 const AppValidationError = require("../errors/ValidationError");
 const AppRouteNotFoundError = require("../errors/RouteNotFoundError");
 
-const errorHandler = (err, req, res, next) => {
+module.exports = () => (err, req, res, next) => {
   let error;
 
   if (err instanceof AppBaseError) {
@@ -34,5 +34,3 @@ const errorHandler = (err, req, res, next) => {
     res.jsend.error(error.message);
   }
 };
-
-module.exports = errorHandler;

@@ -10,7 +10,7 @@ const swaggerUI = require("swagger-ui-express");
 const docs = require("./docs");
 const routes = require("./routes");
 const AppRouteNotFoundError = require("./errors/RouteNotFoundError");
-const errorHandler = require("./middlewares/error");
+const errorMiddleware = require("./middlewares/error");
 const forwardPrefixMiddleware = require("./middlewares/forwardPrefix");
 const AppRateLimitError = require("./errors/RateLimitError");
 const swaggerOptions = require("./configs/swagger");
@@ -18,7 +18,7 @@ const swaggerOptions = require("./configs/swagger");
 
 const app = express();
 
-app.use(forwardPrefixMiddleware);
+app.use(forwardPrefixMiddleware());
 
 app.use(express.json());
 
@@ -54,7 +54,7 @@ app.get("/", (req, res) => {
 
 app.use((req, res, next) => next(new AppRouteNotFoundError(req.path)));
 
-app.use(errorHandler);
+app.use(errorMiddleware());
 
 const port = process.env.PORT || 5000;
 
